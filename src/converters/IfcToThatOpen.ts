@@ -31,12 +31,6 @@ interface IfcEntity {
 }
 
 // Definerer typer for ThatOpen-spesifikke strukturer
-interface ThatOpenWorld {
-  scene: OBC.SimpleScene;
-  camera: OBC.SimpleCamera;
-  renderer: OBC.SimpleRenderer;
-  [key: string]: unknown; // Tillater andre egenskaper
-}
 
 // Konverterer React IFC-modell til IFC eksportformat
 export function convertReactModelToIfcExport(
