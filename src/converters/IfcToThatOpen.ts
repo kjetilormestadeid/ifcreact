@@ -123,6 +123,7 @@ export function initializeThatOpen(container: HTMLElement) {
 
 // Konverterer IFC-elementene til ThatOpen geometri
 export function convertIfcToThatOpen(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   world: any, // Bruker 'any' for å unngå typeproblemer med ThatOpen Components
   elements: Record<string, IfcElement>
 ) {
@@ -185,6 +186,7 @@ interface Dimensions3D {
 
 // Prosesserer et element og dets barn rekursivt
 function processElement(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   world: any, // Bruker 'any' for å unngå typeproblemer
   allElements: Record<string, IfcElement>,
   element: IfcElement,
@@ -219,6 +221,7 @@ function processElement(
 
 // Oppretter geometri for et element basert på type
 function createGeometry(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   world: any, // Bruker 'any' for å unngå typeproblemer
   element: IfcElement,
   position: Position3D,

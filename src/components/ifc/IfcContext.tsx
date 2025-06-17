@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 // Definisjon av IFC-modellens tilstand
@@ -35,20 +35,21 @@ interface IfcProviderProps {
 export const IfcProvider = ({ children }: IfcProviderProps) => {
   const [model, setModel] = useState<IfcModelState>({ elements: {} });
 
-  const addElement = (element: IfcElement) => {
-    // Sjekk om elementet allerede finnes for å unngå dobbelregistrering
-    if (model.elements[element.id]) return;
-    
-    setModel(prevModel => ({
-      ...prevModel,
-      elements: {
-        ...prevModel.elements,
-        [element.id]: element
-      }
-    }));
-  };
+  const addElement = useCallback((element: IfcElement) => {
+    setModel(prevModel => {
+      if (prevModel.elements[element.id]) return prevModel;
 
-  const updateElement = (id: string, updates: Partial<IfcElement>) => {
+      return {
+        ...prevModel,
+        elements: {
+          ...prevModel.elements,
+          [element.id]: element
+        }
+      };
+    });
+  }, []);
+
+  const updateElement = useCallback((id: string, updates: Partial<IfcElement>) => {
     setModel(prevModel => {
       if (!prevModel.elements[id]) return prevModel;
       
@@ -63,37 +64,36 @@ export const IfcProvider = ({ children }: IfcProviderProps) => {
         }
       };
     });
-  };
+  }, []);
 
-  const removeElement = (id: string) => {
-    // Sjekk om elementet finnes for å unngå unødvendige oppdateringer
-    if (!model.elements[id]) return;
-    
+  const removeElement = useCallback((id: string) => {
     setModel(prevModel => {
+      if (!prevModel.elements[id]) return prevModel;
+
       // Destrukturer for å skille elementet som skal fjernes fra resten
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [id]: removed, ...rest } = prevModel.elements;
-      
+
       return {
         ...prevModel,
         elements: rest
       };
     });
-  };
+  }, []);
 
-  const getElement = (id: string) => {
+  const getElement = useCallback((id: string) => {
     return model.elements[id];
-  };
+  }, [model.elements]);
 
-  const addChildToElement = (parentId: string, childId: string) => {
-    // Sjekk om begge elementene finnes
-    if (!model.elements[parentId] || !model.elements[childId]) return;
-    
-    // Sjekk om relasjonen allerede er etablert
-    const parent = model.elements[parentId];
-    if (parent.children?.includes(childId)) return;
-    
+  const addChildToElement = useCallback((parentId: string, childId: string) => {
     setModel(prevModel => {
+      if (!prevModel.elements[parentId] || !prevModel.elements[childId]) {
+        return prevModel;
+      }
+
+      const parent = prevModel.elements[parentId];
+      if (parent.children?.includes(childId)) return prevModel;
+
       return {
         ...prevModel,
         elements: {
@@ -109,17 +109,22 @@ export const IfcProvider = ({ children }: IfcProviderProps) => {
         }
       };
     });
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      model,
+      addElement,
+      updateElement,
+      removeElement,
+      getElement,
+      addChildToElement
+    }),
+    [model, addElement, updateElement, removeElement, getElement, addChildToElement]
+  );
 
   return (
-    <IfcContext.Provider value={{ 
-      model, 
-      addElement, 
-      updateElement, 
-      removeElement, 
-      getElement,
-      addChildToElement 
-    }}>
+    <IfcContext.Provider value={value}>
       {children}
     </IfcContext.Provider>
   );
