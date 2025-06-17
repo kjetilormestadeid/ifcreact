@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 import './App.css';
 import DemoIfcBuilding from './DemoIfcBuilding';
 import ThatOpenViewer from './components/ThatOpenViewer';
+import SimpleHouseDemo from './SimpleHouseDemo';
 import { IfcProvider } from './components/ifc';
 
 const App: FC = () => {
@@ -16,6 +17,11 @@ const App: FC = () => {
       key: '2',
       label: 'ThatOpen Viewer',
       children: <ThatOpenViewer />,
+    },
+    {
+      key: '3',
+      label: 'Simple House Demo',
+      children: <SimpleHouseDemo />,
     },
   ];
 
