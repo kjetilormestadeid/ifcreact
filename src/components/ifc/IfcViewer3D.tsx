@@ -89,24 +89,29 @@ const IfcViewer3D = ({ width = '100%', height = 600 }: IfcViewer3DProps) => {
     // Start render-loop
     animate();
 
-    // Håndter vindusendringer
+    // Håndter vindusendringer og endringer i container-størrelse
     const handleResize = () => {
       if (!containerRef.current || !rendererRef.current || !cameraRef.current) return;
-      
-      const width = containerRef.current.clientWidth;
-      const height = containerRef.current.clientHeight;
-      
+
+      const width = containerRef.current.clientWidth || 1;
+      const height = containerRef.current.clientHeight || 1;
+
       cameraRef.current.aspect = width / height;
       cameraRef.current.updateProjectionMatrix();
-      
+
       rendererRef.current.setSize(width, height);
     };
-    
+
     window.addEventListener('resize', handleResize);
+
+    // Observer endringer på container-elementet (nyttig når den vises/skjules)
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(containerRef.current);
 
     // Opprydding
     return () => {
       window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       cancelAnimationFrame(frameIdRef.current);
       
       if (rendererRef.current && containerRef.current) {
