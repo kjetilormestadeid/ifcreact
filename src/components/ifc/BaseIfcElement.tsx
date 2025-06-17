@@ -56,7 +56,8 @@ export const BaseIfcElement = ({
       removeElement(id);
       isRegisteredRef.current = false;
     };
-  }, [id, type, properties, position, dimensions, addElement, removeElement]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, type, addElement, removeElement]);
   
   // Når props oppdateres, oppdater elementet i konteksten
   useEffect(() => {
@@ -80,7 +81,7 @@ export const BaseIfcElement = ({
         if (React.isValidElement(child) && typeof child.type !== 'string') {
           // Kopier child med parent-ID, bruk childId som key hvis tilgjengelig
           // eller bruk en unik-generert key for å unngå array-index som key
-          const reactChild = child as React.ReactElement<any, any>;
+          const reactChild = child as React.ReactElement<Record<string, unknown>>;
           const childProps: ChildElementProps = {
             onMount: (childId: string) => {
               if (childId) {
@@ -101,7 +102,7 @@ export const BaseIfcElement = ({
       });
     } else if (React.isValidElement(children) && typeof children.type !== 'string') {
       // Håndter enkelt barn
-      const reactChild = children as React.ReactElement<any, any>;
+      const reactChild = children as React.ReactElement<Record<string, unknown>>;
       const childProps: ChildElementProps = {
         onMount: (childId: string) => {
           if (childId) {
