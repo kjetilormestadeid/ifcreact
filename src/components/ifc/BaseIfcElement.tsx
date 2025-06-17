@@ -80,13 +80,14 @@ export const BaseIfcElement = ({
         if (React.isValidElement(child) && typeof child.type !== 'string') {
           // Kopier child med parent-ID, bruk childId som key hvis tilgjengelig
           // eller bruk en unik-generert key for å unngå array-index som key
+          const reactChild = child as React.ReactElement<any, any>;
           const childProps: ChildElementProps = {
             onMount: (childId: string) => {
               if (childId) {
                 addChildToElement(id, childId);
               }
             },
-            key: (child.props.id as string) || `${id}-child-${index}-${uuidv4().slice(0, 8)}`
+            key: (reactChild.props.id as string) || `${id}-child-${index}-${uuidv4().slice(0, 8)}`
           };
           
           // Legg til parent-prop som en del av props som sendes til barnet
@@ -100,13 +101,14 @@ export const BaseIfcElement = ({
       });
     } else if (React.isValidElement(children) && typeof children.type !== 'string') {
       // Håndter enkelt barn
+      const reactChild = children as React.ReactElement<any, any>;
       const childProps: ChildElementProps = {
         onMount: (childId: string) => {
           if (childId) {
             addChildToElement(id, childId);
           }
         },
-        key: (children.props.id as string) || `${id}-child-${uuidv4().slice(0, 8)}`
+        key: (reactChild.props.id as string) || `${id}-child-${uuidv4().slice(0, 8)}`
       };
       
       if (id) {
