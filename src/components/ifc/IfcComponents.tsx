@@ -43,6 +43,22 @@ export const IfcRoof: React.FC<BaseIfcElementProps> = (props) => {
   return <BaseIfcElement type="IfcRoof" {...props} />;
 };
 
+export const IfcCurtainWall: React.FC<BaseIfcElementProps> = (props) => {
+  return <BaseIfcElement type="IfcCurtainWall" {...props} />;
+};
+
+export const IfcFooting: React.FC<BaseIfcElementProps> = (props) => {
+  return <BaseIfcElement type="IfcFooting" {...props} />;
+};
+
+export const IfcPile: React.FC<BaseIfcElementProps> = (props) => {
+  return <BaseIfcElement type="IfcPile" {...props} />;
+};
+
+export const IfcProject: React.FC<BaseIfcElementProps> = (props) => {
+  return <BaseIfcElement type="IfcProject" {...props} />;
+};
+
 // Åpningselementer
 export const IfcWindow: React.FC<BaseIfcElementProps> = (props) => {
   return <BaseIfcElement type="IfcWindow" {...props} />;

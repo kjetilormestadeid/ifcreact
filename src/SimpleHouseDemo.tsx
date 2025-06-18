@@ -1,19 +1,22 @@
 import type { FC } from 'react';
 import {
   IfcProvider,
+  IfcProject,
   IfcSite,
   IfcBuilding,
   IfcBuildingStorey,
   IfcWall,
   IfcDoor,
   IfcWindow,
+  IfcFooting,
   IfcViewer3D
 } from './components/ifc';
 
 const SimpleHouseModel: FC = () => (
-  <IfcSite id="site">
-    <IfcBuilding id="building">
-      <IfcBuildingStorey id="storey">
+  <IfcProject id="project">
+    <IfcSite id="site">
+      <IfcBuilding id="building">
+        <IfcBuildingStorey id="storey">
         <IfcWall
           id="northWall"
           position={{ x: 0, y: 0, z: 0 }}
@@ -46,9 +49,15 @@ const SimpleHouseModel: FC = () => (
           position={{ x: -2, y: 0, z: 2 }}
           dimensions={{ width: 0.2, height: 3, depth: 4 }}
         />
+        <IfcFooting
+          id="foundation"
+          position={{ x: 0, y: -0.25, z: 2 }}
+          dimensions={{ width: 4, height: 0.5, depth: 4 }}
+        />
       </IfcBuildingStorey>
     </IfcBuilding>
-  </IfcSite>
+    </IfcSite>
+  </IfcProject>
 );
 
 const SimpleHouseDemo: FC = () => (

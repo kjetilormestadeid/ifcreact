@@ -279,6 +279,55 @@ const IfcViewer3D = ({ width = '100%', height = 600 }: IfcViewer3DProps) => {
         });
         break;
         
+      case 'IfcCurtainWall':
+        geometry = new THREE.BoxGeometry(
+          dimensions.width || 1,
+          dimensions.height || 3,
+          dimensions.depth || 0.2
+        );
+        material = new THREE.MeshStandardMaterial({
+          color: 0xaaaaee,
+          transparent: true,
+          opacity: 0.5,
+          roughness: 0.2
+        });
+        break;
+      case 'IfcFooting':
+        geometry = new THREE.BoxGeometry(
+          dimensions.width || 1,
+          dimensions.height || 0.5,
+          dimensions.depth || 1
+        );
+        material = new THREE.MeshStandardMaterial({
+          color: 0x555555,
+          roughness: 0.8
+        });
+        break;
+      case 'IfcPile':
+        geometry = new THREE.CylinderGeometry(
+          dimensions.width / 2 || 0.25,
+          dimensions.width / 2 || 0.25,
+          dimensions.height || 2,
+          12
+        );
+        material = new THREE.MeshStandardMaterial({
+          color: 0x888888,
+          roughness: 0.7
+        });
+        break;
+      case 'IfcProject':
+        geometry = new THREE.BoxGeometry(
+          dimensions.width || 1,
+          dimensions.height || 1,
+          dimensions.depth || 1
+        );
+        material = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.05
+        });
+        break;
       default:
         // Standard boks for andre elementer
         geometry = new THREE.BoxGeometry(

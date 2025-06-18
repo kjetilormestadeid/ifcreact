@@ -251,6 +251,18 @@ function createGeometry(
     case 'IfcRoof':
       mesh = createRoof(position, dimensions);
       break;
+    case 'IfcCurtainWall':
+      mesh = createCurtainWall(position, dimensions);
+      break;
+    case 'IfcFooting':
+      mesh = createFooting(position, dimensions);
+      break;
+    case 'IfcPile':
+      mesh = createPile(position, dimensions);
+      break;
+    case 'IfcProject':
+      mesh = createProject(position, dimensions);
+      break;
     case 'IfcSite':
       mesh = createSite(position, dimensions);
       break;
@@ -447,6 +459,71 @@ function createSpace(position: Position3D, dimensions: Dimensions3D): THREE.Mesh
   return mesh;
 }
 
+function createCurtainWall(position: Position3D, dimensions: Dimensions3D): THREE.Mesh {
+  const geometry = new THREE.BoxGeometry(
+    dimensions.width,
+    dimensions.height,
+    dimensions.depth
+  );
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xaaaaee,
+    transparent: true,
+    opacity: 0.5,
+    roughness: 0.2
+  });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(position.x, position.y + dimensions.height / 2, position.z);
+  return mesh;
+}
+
+function createFooting(position: Position3D, dimensions: Dimensions3D): THREE.Mesh {
+  const geometry = new THREE.BoxGeometry(
+    dimensions.width,
+    dimensions.height,
+    dimensions.depth
+  );
+  const material = new THREE.MeshStandardMaterial({
+    color: 0x555555,
+    roughness: 0.8
+  });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(position.x, position.y + dimensions.height / 2, position.z);
+  return mesh;
+}
+
+function createPile(position: Position3D, dimensions: Dimensions3D): THREE.Mesh {
+  const geometry = new THREE.CylinderGeometry(
+    dimensions.width / 2,
+    dimensions.width / 2,
+    dimensions.height,
+    16
+  );
+  const material = new THREE.MeshStandardMaterial({
+    color: 0x888888,
+    roughness: 0.7
+  });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(position.x, position.y + dimensions.height / 2, position.z);
+  return mesh;
+}
+
+function createProject(position: Position3D, dimensions: Dimensions3D): THREE.Mesh {
+  const geometry = new THREE.BoxGeometry(
+    dimensions.width || 1,
+    dimensions.height || 1,
+    dimensions.depth || 1
+  );
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.05
+  });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(position.x, position.y + (dimensions.height || 1) / 2, position.z);
+  return mesh;
+}
+
 function createDefaultElement(position: Position3D, dimensions: Dimensions3D): THREE.Mesh {
   const geometry = new THREE.BoxGeometry(
     dimensions.width,
@@ -508,15 +585,27 @@ export function exportToIfc(data: IfcExportData): string {
       case 'IfcWindow':
         ifcLine = `IFCWINDOW('${element.id}', $, '${element.properties.name || 'Window'}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, ${element.dimensions?.height || 1.2}, ${element.dimensions?.width || 1}, $, $)`;
         break;
-      case 'IfcDoor':
-        ifcLine = `IFCDOOR('${element.id}', $, '${element.properties.name || 'Door'}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, ${element.dimensions?.height || 2.1}, ${element.dimensions?.width || 1}, $, $)`;
-        break;
-      case 'IfcColumn':
-        ifcLine = `IFCCOLUMN('${element.id}', $, '${element.properties.name || 'Column'}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, $, $)`;
-        break;
-      default:
-        ifcLine = `IFCBUILDINGELEMENTPROXY('${element.id}', $, '${element.type}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, $, $, $)`;
-    }
+    case 'IfcDoor':
+      ifcLine = `IFCDOOR('${element.id}', $, '${element.properties.name || 'Door'}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, ${element.dimensions?.height || 2.1}, ${element.dimensions?.width || 1}, $, $)`;
+      break;
+    case 'IfcColumn':
+      ifcLine = `IFCCOLUMN('${element.id}', $, '${element.properties.name || 'Column'}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, $, $)`;
+      break;
+    case 'IfcCurtainWall':
+      ifcLine = `IFCCURTAINWALL('${element.id}', $, '${element.properties.name || 'CurtainWall'}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, ${element.dimensions?.height || 3}, ${element.dimensions?.width || 1}, ${element.dimensions?.depth || 0.2}, $)`;
+      break;
+    case 'IfcFooting':
+      ifcLine = `IFCFOOTING('${element.id}', $, '${element.properties.name || 'Footing'}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, ${element.dimensions?.height || 0.5}, ${element.dimensions?.width || 1}, ${element.dimensions?.depth || 1}, $)`;
+      break;
+    case 'IfcPile':
+      ifcLine = `IFCPILE('${element.id}', $, '${element.properties.name || 'Pile'}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, ${element.dimensions?.height || 1}, ${element.dimensions?.width || 0.5}, $)`;
+      break;
+    case 'IfcProject':
+      ifcLine = `IFCPROJECT('${element.id}', $, '${element.properties.name || 'Project'}', $, $, $, $, $, $)`;
+      break;
+    default:
+      ifcLine = `IFCBUILDINGELEMENTPROXY('${element.id}', $, '${element.type}', $, $, ${element.position?.x || 0}, ${element.position?.y || 0}, ${element.position?.z || 0}, $, $, $)`;
+  }
     
     output += `${ifcLine};\n`;
     idCounter++;
