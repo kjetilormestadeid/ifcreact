@@ -8,6 +8,16 @@ export interface BaseIfcElementProps {
   position?: { x: number; y: number; z: number };
   dimensions?: { width: number; height: number; depth: number };
   properties?: Record<string, unknown>;
+  /**
+   * ID til forelderelementet. Benyttes for 
+   * å koble barn til sin forelder i IFC-modellen.
+   */
+  parent?: string;
+  /**
+   * Callback som utløses når elementet er registrert. 
+   * Forelderen bruker dette til å legge barnet i sin liste.
+   */
+  onMount?: (childId: string) => void;
 }
 
 export interface IfcElementComponentProps extends BaseIfcElementProps {
@@ -28,6 +38,8 @@ export const BaseIfcElement = ({
   position,
   dimensions,
   properties = {},
+  parent,
+  onMount,
 }: IfcElementComponentProps) => {
   const { addElement, removeElement, addChildToElement, updateElement } = useIfc();
   const isRegisteredRef = useRef(false);
@@ -49,6 +61,14 @@ export const BaseIfcElement = ({
     };
     
     addElement(element);
+    // Koble til forelder hvis den finnes
+    if (parent) {
+      addChildToElement(parent, id);
+    }
+    // Varsle forelder via onMount
+    if (onMount) {
+      onMount(id);
+    }
     isRegisteredRef.current = true;
     
     // Fjern elementet fra konteksten når komponenten avmonteres
@@ -57,7 +77,7 @@ export const BaseIfcElement = ({
       isRegisteredRef.current = false;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, type, addElement, removeElement]);
+  }, [id, type, addElement, removeElement, parent, onMount, addChildToElement]);
   
   // Når props oppdateres, oppdater elementet i konteksten
   useEffect(() => {
@@ -70,7 +90,7 @@ export const BaseIfcElement = ({
       dimensions
     });
     
-  }, [id, properties, position, dimensions, updateElement]);
+  }, [id, properties, position, dimensions, updateElement, parent]);
   
   // Funksjon for å sikkert klone barneelements med riktige props
   const renderChildren = () => {
