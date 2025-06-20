@@ -25,6 +25,10 @@ export {
   IfcColumn,
   IfcSlab,
   IfcRoof,
+  IfcCurtainWall,
+  IfcFooting,
+  IfcPile,
+  IfcProject,
   
   // Åpningselementer
   IfcWindow,
@@ -51,4 +55,4 @@ export {
   // Gruppe og samling
   IfcElementAssembly,
   IfcSystem
-} from './IfcComponents'; 
+} from './IfcComponents';

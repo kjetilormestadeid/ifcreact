@@ -31,6 +31,36 @@ export default tseslint.config({
 })
 ```
 
+## IFC React components
+
+This project exposes React components for several IFC entities. You can combine
+them in JSX to describe a basic building structure. Recently added components
+include `IfcProject`, `IfcCurtainWall`, `IfcFooting` and `IfcPile`.
+
+```tsx
+import {
+  IfcProject,
+  IfcSite,
+  IfcBuilding,
+  IfcBuildingStorey,
+  IfcWall,
+  IfcFooting
+} from './components/ifc';
+
+const MyModel = () => (
+  <IfcProject id="p1">
+    <IfcSite id="s1">
+      <IfcBuilding id="b1">
+        <IfcBuildingStorey id="storey">
+          <IfcWall id="wall1" />
+          <IfcFooting id="foot1" position={{ x: 0, y: -0.3, z: 0 }} />
+        </IfcBuildingStorey>
+      </IfcBuilding>
+    </IfcSite>
+  </IfcProject>
+);
+```
+
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
