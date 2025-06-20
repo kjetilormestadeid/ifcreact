@@ -1,6 +1,5 @@
 import type { FC } from 'react';
 import {
-  IfcProvider,
   IfcSite,
   IfcBuilding,
   IfcBuildingStorey,
@@ -52,12 +51,10 @@ const SimpleHouseModel: FC = () => (
 );
 
 const SimpleHouseDemo: FC = () => (
-  <IfcProvider>
-    <div style={{ width: '100%' }}>
-      <SimpleHouseModel />
-      <IfcViewer3D height={400} />
-    </div>
-  </IfcProvider>
+  <div style={{ width: '100%' }}>
+    <SimpleHouseModel />
+    <IfcViewer3D height={400} />
+  </div>
 );
 
 export default SimpleHouseDemo;

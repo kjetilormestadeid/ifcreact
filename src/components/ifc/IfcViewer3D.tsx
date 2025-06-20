@@ -21,7 +21,8 @@ const IfcViewer3D = ({ width = '100%', height = 600 }: IfcViewer3DProps) => {
 
   // Initialiser Three.js
   useEffect(() => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     // Opprett scene
     const scene = new THREE.Scene();
@@ -31,7 +32,7 @@ const IfcViewer3D = ({ width = '100%', height = 600 }: IfcViewer3DProps) => {
     // Oppsett av kamera
     const camera = new THREE.PerspectiveCamera(
       75,
-      (containerRef.current.clientWidth || 1) / (containerRef.current.clientHeight || 1),
+      (container.clientWidth || 1) / (container.clientHeight || 1),
       0.1,
       1000
     );
@@ -42,12 +43,12 @@ const IfcViewer3D = ({ width = '100%', height = 600 }: IfcViewer3DProps) => {
     // Oppsett av renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(
-      containerRef.current.clientWidth || 1,
-      containerRef.current.clientHeight || 1
+      container.clientWidth || 1,
+      container.clientHeight || 1
     );
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
-    containerRef.current.appendChild(renderer.domElement);
+    container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     // Legg til kontroller
@@ -91,10 +92,10 @@ const IfcViewer3D = ({ width = '100%', height = 600 }: IfcViewer3DProps) => {
 
     // Håndter vindusendringer og endringer i container-størrelse
     const handleResize = () => {
-      if (!containerRef.current || !rendererRef.current || !cameraRef.current) return;
+      if (!container || !rendererRef.current || !cameraRef.current) return;
 
-      const width = containerRef.current.clientWidth || 1;
-      const height = containerRef.current.clientHeight || 1;
+      const width = container.clientWidth || 1;
+      const height = container.clientHeight || 1;
 
       cameraRef.current.aspect = width / height;
       cameraRef.current.updateProjectionMatrix();
@@ -106,7 +107,7 @@ const IfcViewer3D = ({ width = '100%', height = 600 }: IfcViewer3DProps) => {
 
     // Observer endringer på container-elementet (nyttig når den vises/skjules)
     const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(containerRef.current);
+    resizeObserver.observe(container);
 
     // Opprydding
     return () => {
@@ -114,8 +115,8 @@ const IfcViewer3D = ({ width = '100%', height = 600 }: IfcViewer3DProps) => {
       resizeObserver.disconnect();
       cancelAnimationFrame(frameIdRef.current);
       
-      if (rendererRef.current && containerRef.current) {
-        containerRef.current.removeChild(rendererRef.current.domElement);
+      if (rendererRef.current && container) {
+        container.removeChild(rendererRef.current.domElement);
       }
       
       if (rendererRef.current) {
